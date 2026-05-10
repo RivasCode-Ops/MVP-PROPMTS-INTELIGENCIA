@@ -29,12 +29,36 @@ if (!(Get-Command uv -ErrorAction SilentlyContinue)) {
     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 }
 
-# Ollama
+$uvBin = Join-Path $HOME ".local\bin"
+if (Test-Path $uvBin) {
+    $env:Path = "$uvBin;$env:Path"
+}
+
+# Ollama (preferir winget silencioso; fallback instalador GUI)
 if (!(Get-Command ollama -ErrorAction SilentlyContinue)) {
-    Write-Host "Ollama nao encontrado. Baixando instalador..." -ForegroundColor Yellow
-    $ollamaInstaller = Join-Path $env:TEMP "OllamaSetup.exe"
-    Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" -OutFile $ollamaInstaller
-    Start-Process $ollamaInstaller -Wait
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if ($winget) {
+        Write-Host "Instalando Ollama via winget (pode demorar)..." -ForegroundColor Yellow
+        winget install -e --id Ollama.Ollama --accept-package-agreements --accept-source-agreements --silent
+        $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+    }
+    if (!(Get-Command ollama -ErrorAction SilentlyContinue)) {
+        Write-Host "Ollama nao encontrado no PATH. Baixando instalador..." -ForegroundColor Yellow
+        $ollamaInstaller = Join-Path $env:TEMP "OllamaSetup.exe"
+        Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" -OutFile $ollamaInstaller
+        Start-Process $ollamaInstaller -Wait
+        $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+    }
+}
+
+# Copiar skills/kb do repositorio (mesma pasta deste script) para o perfil do usuario
+$repoRoot = $PSScriptRoot
+if ($repoRoot -and (Test-Path (Join-Path $repoRoot "skills"))) {
+    Write-Host "Sincronizando skills e kb do repositorio..." -ForegroundColor Yellow
+    Copy-Item -Path (Join-Path $repoRoot "skills\*") -Destination $skillsRoot -Recurse -Force
+}
+if ($repoRoot -and (Test-Path (Join-Path $repoRoot "kb"))) {
+    Copy-Item -Path (Join-Path $repoRoot "kb\*") -Destination $kbRoot -Recurse -Force
 }
 
 Write-Host "Baixando modelo local qwen2.5:7b..." -ForegroundColor Yellow
