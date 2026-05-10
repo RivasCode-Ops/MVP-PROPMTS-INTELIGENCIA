@@ -126,6 +126,15 @@ $mcpJson = @"
 "@
 Set-Content -Path $mcpJsonPath -Value $mcpJson -Encoding UTF8
 
+# Espelhar MCP no repositorio (Cursor usa .cursor/mcp.json por projeto)
+if ($repoRoot -and (Test-Path $repoRoot)) {
+    $projectCursor = Join-Path $repoRoot ".cursor"
+    New-Item -ItemType Directory -Force -Path $projectCursor | Out-Null
+    $projectMcpPath = Join-Path $projectCursor "mcp.json"
+    Set-Content -Path $projectMcpPath -Value $mcpJson -Encoding UTF8
+    Write-Host "MCP do projeto atualizado: $projectMcpPath" -ForegroundColor Green
+}
+
 Write-Host "Setup concluido." -ForegroundColor Green
 Write-Host "Arquivos gerados:" -ForegroundColor Green
 Write-Host " - $configYamlPath"
