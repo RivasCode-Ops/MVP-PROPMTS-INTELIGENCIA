@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "skill-depot": {
+      "command": "npx",
+      "args": ["-y", "skill-depot", "serve"],
+      "env": {
+        "SKILLS_PATH": "C:/Users/ULTRA/skills"
+      }
+    },
+    "skills-mcp": {
+      "command": "npx",
+      "args": ["-y", "skills-mcp", "-s", "C:/Users/ULTRA/skills"]
+    },
+    "knowledge-mcp": {
+      "command": "uvx",
+      "args": [
+        "knowledge-mcp",
+        "--config",
+        "C:/Users/ULTRA/kb/config.yaml",
+        "mcp"
+      ]
+    }
+  }
+}

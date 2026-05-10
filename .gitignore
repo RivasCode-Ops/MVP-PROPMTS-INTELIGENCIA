@@ -1,0 +1,17 @@
+# Logs e artefatos locais da KB / MCP
+logs.txt
+*.log
+.env
+.env.*
+
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+
+# OS / IDE (opcional — versionar .cursor/ é desejável neste projeto)
+.DS_Store
+Thumbs.db

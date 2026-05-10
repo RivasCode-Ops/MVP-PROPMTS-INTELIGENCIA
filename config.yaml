@@ -1,0 +1,26 @@
+knowledge_base:
+  base_dir: "C:/Users/ULTRA/kb"
+
+lightrag:
+  llm:
+    provider: "ollama"
+    model_name: "qwen2.5:7b"
+    api_url: "http://localhost:11434"
+
+  embedding:
+    provider: "huggingface"
+    model_name: "sentence-transformers/all-MiniLM-L6-v2"
+
+  retrieval:
+    top_k: 5
+    hybrid_search: true
+    graph_weight: 0.3
+    similarity_threshold: 0.7
+
+chunking:
+  chunk_size: 1000
+  chunk_overlap: 200
+
+logging:
+  level: "INFO"
+  file: "C:/Users/ULTRA/kb/logs.txt"
